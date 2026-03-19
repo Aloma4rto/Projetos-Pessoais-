@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mitologia Nórdica — Os Mundos do Yggdrasil</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-dim: #7a6030;
+    --ice: #a8d8f0;
+    --ice-dark: #4a8aaa;
+    --storm: #1a1f2e;
+    --storm-deep: #0a0c14;
+    --storm-mid: #141824;
+    --rune-red: #8b1a1a;
+    --mist: rgba(168, 216, 240, 0.08);
+    --white-smoke: #e8e0d0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--storm-deep);
+    color: var(--white-smoke);
+    font-family: 'IM Fell English', Georgia, serif;
+    overflow-x: hidden;
+  }
+
+  /* ========== HERO ========== */
+  #hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 30%, #1e2a45 0%, #0d1220 50%, #050810 100%);
+  }
+
+  /* Storm clouds */
+  .clouds {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .cloud {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    animation: cloudDrift linear infinite;
+    opacity: 0;
+  }
+  .cloud:nth-child(1) { width:700px;height:300px;background:radial-gradient(ellipse,#1c2a4a,transparent);top:-80px;left:-200px;animation-duration:40s;animation-delay:0s; }
+  .cloud:nth-child(2) { width:600px;height:250px;background:radial-gradient(ellipse,#1a2540,transparent);top:-60px;right:-150px;animation-duration:50s;animation-delay:-15s; }
+  .cloud:nth-child(3) { width:800px;height:350px;background:radial-gradient(ellipse,#12233a,transparent);top:0;left:20%;animation-duration:60s;animation-delay:-30s; }
+  .cloud:nth-child(4) { width:500px;height:200px;background:radial-gradient(ellipse,#0e1a2e,transparent);top:-40px;left:40%;animation-duration:45s;animation-delay:-8s; }
+
+  @keyframes cloudDrift {
+    0%   { opacity:0.7; transform:translateX(0) scale(1); }
+    50%  { opacity:0.9; transform:translateX(30px) scale(1.03); }
+    100% { opacity:0.7; transform:translateX(0) scale(1); }
+  }
+
+  /* Lightning canvas */
+  #lightning-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Storm flash overlay */
+  #flash-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(180, 220, 255, 0.0);
+    pointer-events: none;
+    transition: background 0.05s;
+    z-index: 2;
+  }
+
+  /* Mist/fog at bottom */
+  .mist-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 280px;
+    background: linear-gradient(to top, rgba(10,12,20,0.98) 0%, rgba(10,12,20,0.6) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Rune border top */
+  .rune-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, transparent, var(--gold), #fff8e0, var(--gold), transparent);
+    box-shadow: 0 0 20px var(--gold), 0 0 40px var(--gold-dim);
+    z-index: 10;
+  }
+
+  /* Hero content */
+  .hero-content {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.5rem, 7vw, 6.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: #fff;
+    text-shadow:
+      0 0 30px rgba(140, 180, 255, 0.6),
+      0 0 60px rgba(100, 150, 255, 0.3),
+      0 2px 4px rgba(0,0,0,0.8);
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.8s forwards;
+    margin-bottom: 0.3em;
+  }
+
+  .hero-title span {
+    color: var(--gold-light);
+    text-shadow:
+      0 0 20px rgba(240, 200, 80, 0.8),
+      0 0 40px rgba(200, 160, 60, 0.5);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.9rem, 2vw, 1.4rem);
+    color: var(--ice);
+    letter-spacing: 0.15em;
+    margin-top: 1em;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .hero-divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 2rem auto;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.6s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 2.2s forwards;
+  }
+  .scroll-hint span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+  .scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 1px solid var(--gold-dim);
+    border-bottom: 1px solid var(--gold-dim);
+    transform: rotate(45deg);
+    animation: bounce 1.5s ease infinite;
+  }
+
+  @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(6px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* ========== ORIGIN SECTION ========== */
+  #origin {
+    position: relative;
+    background: linear-gradient(180deg, var(--storm-deep) 0%, var(--storm-mid) 100%);
+    padding: 100px 20px;
+    overflow: hidden;
+  }
+
+  #origin::before {
+    content: 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 1.4rem;
+    letter-spacing: 0.8em;
+    color: var(--gold-dim);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  .section-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 3rem;
+    text-shadow: 0 0 20px rgba(200,160,60,0.4);
+  }
+
+  .origin-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .origin-block {
+    border-left: 2px solid var(--gold-dim);
+    padding-left: 2rem;
+    position: relative;
+  }
+
+  .origin-block::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px var(--gold);
+  }
+
+  .origin-block h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .origin-block p {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #c8c0b0;
+  }
+
+  .highlight-quote {
+    border: 1px solid var(--gold-dim);
+    border-left: 4px solid var(--gold);
+    background: rgba(201, 168, 76, 0.05);
+    padding: 2rem 2.5rem;
+    margin: 3rem 0;
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--white-smoke);
+    position: relative;
+  }
+
+  .highlight-quote::before {
+    content: '❝';
+    font-size: 3rem;
+    color: var(--gold-dim);
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    line-height: 1;
+  }
+
+  /* ========== GODS SECTION ========== */
+  #gods {
+    background: var(--storm-deep);
+    padding: 100px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #gods::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  .gods-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+  }
+
+  .god-card {
+    position: relative;
+    padding: 3rem 2.5rem;
+    background: var(--storm-mid);
+    overflow: hidden;
+    cursor: default;
+    transition: transform 0.3s ease;
+  }
+
+  .god-card:hover {
+    transform: translateY(-4px);
+    z-index: 2;
+  }
+
+  .god-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+
+  .god-card:hover::before { opacity: 1; }
+
+  .god-card[data-god="odin"]::before { background: radial-gradient(ellipse at 50% 0%, rgba(80,60,120,0.3), transparent 70%); }
+  .god-card[data-god="thor"]::before { background: radial-gradient(ellipse at 50% 0%, rgba(60,100,180,0.3), transparent 70%); }
+  .god-card[data-god="loki"]::before { background: radial-gradient(ellipse at 50% 0%, rgba(180,60,40,0.3), transparent 70%); }
+  .god-card[data-god="freya"]::before { background: radial-gradient(ellipse at 50% 0%, rgba(180,120,60,0.3), transparent 70%); }
+  .god-card[data-god="tyr"]::before { background: radial-gradient(ellipse at 50% 0%, rgba(60,120,80,0.3), transparent 70%); }
+  .god-card[data-god="baldur"]::before { background: radial-gradient(ellipse at 50% 0%, rgba(200,180,100,0.3), transparent 70%); }
+
+  .god-rune {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    opacity: 0.6;
+  }
+
+  .god-card[data-god="odin"] .god-rune  { color: #b090ff; }
+  .god-card[data-god="thor"] .god-rune  { color: #90b8ff; }
+  .god-card[data-god="loki"] .god-rune  { color: #ff8060; }
+  .god-card[data-god="freya"] .god-rune { color: #ffcc88; }
+  .god-card[data-god="tyr"] .god-rune   { color: #80d0a0; }
+  .god-card[data-god="baldur"] .god-rune{ color: #ffe080; }
+
+  .god-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    color: var(--gold-light);
+    margin-bottom: 0.3rem;
+  }
+
+  .god-epithet {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .god-desc {
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: #b0a898;
+  }
+
+  .god-attributes {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .attr-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-dim);
+    border-radius: 0;
+  }
+
+  /* ========== NINE WORLDS ========== */
+  #worlds {
+    padding: 100px 20px;
+    background: linear-gradient(180deg, var(--storm-deep), #0d1525);
+    position: relative;
+  }
+
+  .worlds-tree {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .world-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    align-items: start;
+  }
+
+  .world-item:last-child { border-bottom: none; }
+
+  .world-name-block {
+    text-align: right;
+  }
+
+  .world-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .world-rune-name {
+    font-size: 1.2rem;
+    color: var(--gold-dim);
+    display: block;
+  }
+
+  .world-desc {
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: #a8a090;
+    padding-top: 0.25rem;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--storm-deep);
+    border-top: 1px solid var(--gold-dim);
+    padding: 3rem 20px;
+    text-align: center;
+  }
+
+  footer p {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+
+  .footer-runes {
+    font-size: 1.5rem;
+    letter-spacing: 0.5em;
+    color: var(--gold-dim);
+    opacity: 0.3;
+    margin-top: 1rem;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(to bottom, rgba(5,8,16,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  nav a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  nav a:hover { color: var(--gold-light); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero">Início</a>
+  <a href="#origin">Origem</a>
+  <a href="#gods">Deuses</a>
+  <a href="#worlds">Os Nove Mundos</a>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section id="hero">
+  <div class="rune-border"></div>
+
+  <div class="clouds">
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+  </div>
+
+  <canvas id="lightning-canvas"></canvas>
+  <div id="flash-overlay"></div>
+  <div class="mist-layer"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">ᛗᛁᛏᛟᛚᛟᚷᛁᚨ — Das Eras Primordiais</p>
+    <h1 class="hero-title">Mitologia<br><span>Nórdica</span></h1>
+    <p class="hero-subtitle">Os Mundos do Yggdrasil • Os Deuses de Asgard • O Ragnarök</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Descer</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ====== ORIGIN ====== -->
+<section id="origin">
+  <div class="section-inner">
+    <span class="section-tag">ᚷᛖᚾᛖᛋᛁᛋ — Das Trevas ao Cosmos</span>
+    <h2 class="section-title">A Origem da Mitologia Nórdica</h2>
+
+    <div class="highlight-quote">
+      No princípio não havia nem areia, nem mar, nem ondas frias. A Terra não existia, nem o céu acima. Apenas o vácuo de Ginnungagap — e a erva em nenhum lugar.
+      <br><br><em style="font-size:0.85rem; color:var(--gold-dim);">— Völuspá, Éda Poética</em>
+    </div>
+
+    <div class="origin-grid">
+      <div class="origin-block">
+        <h3>O Ginnungagap — O Vazio Primordial</h3>
+        <p>Antes de tudo existir, havia apenas o Ginnungagap — um abismo insondável, eterno e silencioso. Não havia deuses, não havia homens, não havia tempo. Era o nada absoluto que precedeu toda a criação. Ao norte desse vazio se estendia Niflheim, o reino eterno do gelo e da névoa, de onde jorrava o rio Élivágar, congelando tudo ao redor. Ao sul ardia Muspelheim, o reino primordial do fogo, habitado pelos gigantes das chamas sob o domínio de Surtr.</p>
+      </div>
+
+      <div class="origin-block">
+        <h3>Ymir — O Primeiro Ser</h3>
+        <p>Quando o calor de Muspelheim encontrou o gelo de Niflheim no centro do Ginnungagap, o degelo deu origem a Ymir, o primeiro ser vivo — um gigante de gelo imenso e primitivo. Do suor de sua axila esquerda nasceram um homem e uma mulher; suas pernas se uniram e geraram um filho de seis cabeças. Assim surgiu a raça dos Jötnar, os gigantes primordiais, antecessores de todos os seres. Enquanto dormia, Ymir era alimentado pelo leite de Auðumbla, a vaca cósmica que surgiu do gelo.</p>
+      </div>
+
+      <div class="origin-block">
+        <h3>Auðumbla e o Nascimento de Búri</h3>
+        <p>Auðumbla, a vaca primordial, lambeu os blocos de sal gelado de Niflheim por alimento. Ao longo de três dias de lambidas, foi revelando a forma de um ser aprisionado no gelo: Búri, o primeiro dos Aesir — os ancestrais dos deuses. Búri gerou Borr, e Borr uniu-se com Bestla, filha de gigantes. Dessa união nasceram os três filhos que transformariam o cosmos: Odin, Vili e Vé — os primeiros deuses verdadeiros.</p>
+      </div>
+
+      <div class="origin-block">
+        <h3>A Criação do Mundo</h3>
+        <p>Odin, Vili e Vé mataram Ymir. Do sangue do gigante primordial jorrou um dilúvio tão imenso que afogou quase todos os outros gigantes — apenas Bergelmir e sua esposa sobreviveram, refugiando-se em uma arca, tornando-se ancestrais de todos os gigantes futuros. Do corpo de Ymir, os três irmãos construíram o cosmos inteiro: seus ossos tornaram-se as montanhas, seu sangue os mares e rios, sua carne a terra firme, seu crânio o céu, e seus miolos as nuvens.</p>
+      </div>
+
+      <div class="origin-block">
+        <h3>O Nascimento da Humanidade</h3>
+        <p>Caminhando pela Terra recém-criada, Odin, Vili e Vé encontraram dois troncos à beira-mar — um de freixo e outro de olmo. Com poderes divinos, transformaram essas árvores nos primeiros humanos: Ask e Embla. Odin soprou neles o sopro da vida e a alma. Vili lhes deu a consciência e o movimento. Vé lhes concedeu os sentidos, a fala e a cor. Assim nasceu a humanidade, abrigada em Midgard — o mundo do meio — cercada e protegida pelas muralhas feitas das sobrancelhas de Ymir.</p>
+      </div>
+
+      <div class="origin-block">
+        <h3>Yggdrasil — A Árvore do Mundo</h3>
+        <p>No centro de todos os reinos erguia-se Yggdrasil, o Freixo Cósmico eterno, cujas raízes mergulhavam nos três poços sagrados: Urðarbrunnr, o Poço do Destino guardado pelas Nornas tecelãs do tempo; Mímisbrunnr, o Poço da Sabedoria, onde Odin sacrificou um olho para beber de sua água onisciente; e o terceiro, em Niflheim, próximo ao dragão Níðhöggr que rói eternamente suas raízes. Yggdrasil sustentava os Nove Mundos e era habitada por inúmeros seres — a águia sábia em seu cume, o esquilo Ratatoskr correndo pelo tronco com mensagens, e os cervos pastando em seus galhos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== GODS ====== -->
+<section id="gods">
+  <div style="max-width:1200px;margin:0 auto;">
+    <span class="section-tag" style="text-align:center;display:block;">ᚨᛋᛁᚱ — Os Senhores de Asgard</span>
+    <h2 class="section-title">Os Grandes Deuses</h2>
+  </div>
+  <div class="gods-grid">
+
+    <div class="god-card" data-god="odin">
+      <span class="god-rune">ᚢ</span>
+      <h3 class="god-name">Odin</h3>
+      <span class="god-epithet">O Pai de Todos • Allfather</span>
+      <p class="god-desc">O mais poderoso dos Aesir e governante de Asgard. Odin sacrificou um olho no Poço de Mímir em troca de sabedoria infinita, e pendurou-se no Yggdrasil por nove dias para descobrir os segredos das runas. Comanda os corvos Huginn e Muninn — Pensamento e Memória — que sobrevoam os nove mundos e lhe reportam tudo. É deus da sabedoria, guerra, morte, poesia e magia.</p>
+      <div class="god-attributes">
+        <span class="attr-tag">Sabedoria</span>
+        <span class="attr-tag">Guerra</span>
+        <span class="attr-tag">Magia</span>
+        <span class="attr-tag">Morte</span>
+        <span class="attr-tag">Poesia</span>
+      </div>
+    </div>
+
+    <div class="god-card" data-god="thor">
+      <span class="god-rune">ᚦ</span>
+      <h3 class="god-name">Thor</h3>
+      <span class="god-epithet">O Deus do Trovão • Thunderer</span>
+      <p class="god-desc">Filho de Odin e da Terra (Jörð), Thor é o protetor da humanidade e o guardião dos deuses contra os gigantes. Brandindo Mjölnir — o martelo mais poderoso da criação — percorre os céus em sua carruagem puxada por dois bodes, Tanngrisnir e Tanngnjóstr, gerando o trovão com suas rodas. É venerado por guerreiros e agricultores como símbolo de força, proteção e fertilidade.</p>
+      <div class="god-attributes">
+        <span class="attr-tag">Trovão</span>
+        <span class="attr-tag">Força</span>
+        <span class="attr-tag">Proteção</span>
+        <span class="attr-tag">Tempestades</span>
+      </div>
+    </div>
+
+    <div class="god-card" data-god="loki">
+      <span class="god-rune">ᛚ</span>
+      <h3 class="god-name">Loki</h3>
+      <span class="god-epithet">O Enganador • Shapeshifter</span>
+      <p class="god-desc">Filho do gigante Fárbauti, Loki é o deus da astúcia, do engano e da mudança de forma. Sua natureza dual o torna simultaneamente aliado e adversário dos Aesir — ora salvando-os com sua inteligência, ora os colocando em perigo por sua imprudência. Pai de Fenrir o lobo, Jörmungandr a serpente do mundo e Hel a governante dos mortos. Sua traição culminou no assassinato de Baldur, selando seu destino e o Ragnarök.</p>
+      <div class="god-attributes">
+        <span class="attr-tag">Astúcia</span>
+        <span class="attr-tag">Engano</span>
+        <span class="attr-tag">Fogo</span>
+        <span class="attr-tag">Caos</span>
+      </div>
+    </div>
+
+    <div class="god-card" data-god="freya">
+      <span class="god-rune">ᚠ</span>
+      <h3 class="god-name">Freya</h3>
+      <span class="god-epithet">Senhora dos Vanir • Vanadis</span>
+      <p class="god-desc">A mais bela e poderosa das deusas, Freya é senhora do amor, da fertilidade, da guerra e da magia Seiðr. Ela escolhe metade dos guerreiros caídos em batalha para seu salão Fólkvangr, enquanto a outra metade vai para Valhalla de Odin. Veste o manto Fjaðrhamr de penas de falcão que permite voar entre os mundos, e possui o colar Brísingamen, forjado pelos anões, de beleza inigualável.</p>
+      <div class="god-attributes">
+        <span class="attr-tag">Amor</span>
+        <span class="attr-tag">Magia Seiðr</span>
+        <span class="attr-tag">Guerra</span>
+        <span class="attr-tag">Fertilidade</span>
+      </div>
+    </div>
+
+    <div class="god-card" data-god="tyr">
+      <span class="god-rune">ᛏ</span>
+      <h3 class="god-name">Tyr</h3>
+      <span class="god-epithet">Deus da Justiça • One-Handed God</span>
+      <p class="god-desc">Tyr é o deus da guerra justa, da lei e da honra — mais antigo que Odin em algumas tradições. Sacrificou sua mão direita na boca do lobo Fenrir para que os deuses pudessem acorrentá-lo com a fita mágica Gleipnir, demonstrando coragem e sacrifício sem paralelo. Seu nome inspirou a palavra nórdica para "deus" (tívar) e deu origem ao nome da terça-feira (Tuesday — Tyr's Day).</p>
+      <div class="god-attributes">
+        <span class="attr-tag">Justiça</span>
+        <span class="attr-tag">Lei</span>
+        <span class="attr-tag">Honra</span>
+        <span class="attr-tag">Sacrifício</span>
+      </div>
+    </div>
+
+    <div class="god-card" data-god="baldur">
+      <span class="god-rune">ᛒ</span>
+      <h3 class="god-name">Baldur</h3>
+      <span class="god-epithet">O Deus da Luz • Beloved of All</span>
+      <p class="god-desc">Filho de Odin e Frigg, Baldur era o mais amado de todos os deuses — radiante, bondoso e tão belo que a luz irradiava de seu rosto. Sua morte pelo engano de Loki, usando um dardo de visco, a única coisa que jurara não ferir Baldur, mergulhou os nove mundos em luto e desencadeou a sequência de eventos que levaria ao Ragnarök. Sua ressurreição após o fim dos tempos representa a renovação e o mundo novo.</p>
+      <div class="god-attributes">
+        <span class="attr-tag">Luz</span>
+        <span class="attr-tag">Bondade</span>
+        <span class="attr-tag">Renascimento</span>
+        <span class="attr-tag">Pureza</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====== NINE WORLDS ====== -->
+<section id="worlds">
+  <div class="section-inner">
+    <span class="section-tag">ᚾᛁᚢ ᚺᛖᛁᛗᚱ — Os Nove Reinos</span>
+    <h2 class="section-title">Os Nove Mundos de Yggdrasil</h2>
+
+    <div class="worlds-tree">
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Asgard</span>
+          <span class="world-rune-name">ᚨᛋᚷᚨᚱᛞ</span>
+        </div>
+        <p class="world-desc">O reino celestial dos Aesir, os deuses principais. Lar de Odin, Thor e os grandes deuses, Asgard é conectado a Midgard pela Bifröst, a ponte arco-íris de três cores guardada pelo deus Heimdall. Em seu coração fica Valhalla, o majestoso salão dos guerreiros honrados.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Midgard</span>
+          <span class="world-rune-name">ᛗᛁᛞᚷᚨᚱᛞ</span>
+        </div>
+        <p class="world-desc">O mundo do meio — a Terra habitada pelos humanos. Criado do corpo de Ymir e cercado pelo oceano infinito onde repousa a Serpente Jörmungandr. Protegido por muralhas feitas das sobrancelhas do gigante primordial, Midgard é o centro visível do cosmos nórdico.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Jötunheim</span>
+          <span class="world-rune-name">ᛃᛟᛏᚢᚾ</span>
+        </div>
+        <p class="world-desc">O reino dos gigantes — Jötnar — eternos rivais dos deuses. Terra de florestas densas, montanhas imensas e rios caudalosos. Seu governante Útgarða-Loki reside na fortaleza de Útgarðr, onde ilusões poderosas desafiam até os próprios deuses.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Niflheim</span>
+          <span class="world-rune-name">ᚾᛁᚠᛚ</span>
+        </div>
+        <p class="world-desc">O mais antigo dos mundos — o reino primordial do gelo, névoa e escuridão. De suas fontes geladas nasceu o Ginnungagap. É aqui que reside Náströnd, a praia dos mortos malditos, e onde o dragão Níðhöggr rói eternamente as raízes de Yggdrasil.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Muspelheim</span>
+          <span class="world-rune-name">ᛗᚢᛋᛈᛖᛚ</span>
+        </div>
+        <p class="world-desc">O reino eterno do fogo, habitado pelos gigantes das chamas. Governado por Surtr, o poderoso senhor do fogo que carrega uma espada flamejante. No Ragnarök, Surtr cruzará Bifröst e incendiará os nove mundos, reduzindo tudo a cinzas antes do renascimento.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Vanaheim</span>
+          <span class="world-rune-name">ᚹᚨᚾᚨ</span>
+        </div>
+        <p class="world-desc">O lar dos Vanir — os deuses da natureza, fertilidade e magia. Após a guerra entre Aesir e Vanir, um acordo de paz foi selado com uma troca de reféns: Njörðr, Freyr e Freya foram para Asgard, enquanto Mímir e Hœnir foram para Vanaheim.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Alfheim</span>
+          <span class="world-rune-name">ᚨᛚᚠ</span>
+        </div>
+        <p class="world-desc">O reino luminoso dos Elfos da Luz (Ljósálfar), seres de beleza sobrenatural. O deus Freyr recebeu Alfheim como presente de dente-de-leite dos deuses. Os elfos da luz são tão radiantes que sua aparência é mais bela que o sol.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Svartalfheim</span>
+          <span class="world-rune-name">ᛞᚹᛖᚱᚷ</span>
+        </div>
+        <p class="world-desc">O reino subterrâneo dos anões (Dvergar) e elfos das trevas. Mestres incomparáveis da forja e da criação, os anões criaram as maiores relíquias da mitologia: Mjölnir de Thor, a lança Gungnir de Odin, o anel Draupnir e a corrente Gleipnir que prendeu Fenrir.</p>
+      </div>
+      <div class="world-item">
+        <div class="world-name-block">
+          <span class="world-name">Helheim</span>
+          <span class="world-rune-name">ᚺᛖᛚ</span>
+        </div>
+        <p class="world-desc">O reino dos mortos governado por Hel, filha de Loki — metade de seu corpo vivo e saudável, metade cadáver em decomposição. Para Helheim vão todos os que não morrem em batalha: os mortos de doença, velhice e outros meios. É um lugar sombrio, mas não necessariamente de tormento eterno.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <p>Os mundos do Yggdrasil — Mitologia Nórdica</p>
+  <p style="margin-top:0.5rem;font-size:0.6rem;letter-spacing:0.2em;">Baseado nas Éddas Poética e em Prosa • Völuspá • Gylfaginning</p>
+  <div class="footer-runes">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ</div>
+</footer>
+
+<script>
+// ======= LIGHTNING ENGINE =======
+const canvas = document.getElementById('lightning-canvas');
+const ctx = canvas.getContext('2d');
+const flash = document.getElementById('flash-overlay');
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function randomRange(a, b) { return a + Math.random() * (b - a); }
+
+function drawBolt(x1, y1, x2, y2, roughness, depth, alpha, color) {
+  if (depth === 0) return;
+  const mx = (x1 + x2) / 2 + (Math.random() - 0.5) * roughness;
+  const my = (y1 + y2) / 2 + (Math.random() - 0.5) * roughness * 0.3;
+  drawBolt(x1, y1, mx, my, roughness * 0.55, depth - 1, alpha, color);
+  drawBolt(mx, my, x2, y2, roughness * 0.55, depth - 1, alpha, color);
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(mx, my);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.globalAlpha = alpha;
+  ctx.lineWidth = depth * 0.6;
+  ctx.shadowBlur = 12;
+  ctx.shadowColor = color;
+  ctx.stroke();
+
+  // Branch
+  if (depth > 2 && Math.random() < 0.35) {
+    const bx = mx + (Math.random() - 0.5) * 200;
+    const by = my + randomRange(40, 120);
+    drawBolt(mx, my, bx, by, roughness * 0.4, depth - 2, alpha * 0.5, color);
+  }
+}
+
+function triggerLightning() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const numBolts = Math.floor(randomRange(1, 3));
+  const colors = ['rgba(160,200,255,1)', 'rgba(200,220,255,1)', 'rgba(140,180,255,1)'];
+
+  for (let b = 0; b < numBolts; b++) {
+    const sx = randomRange(canvas.width * 0.15, canvas.width * 0.85);
+    const ex = sx + randomRange(-180, 180);
+    const ey = randomRange(canvas.height * 0.4, canvas.height * 0.8);
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const alpha = randomRange(0.6, 1.0);
+
+    drawBolt(sx, 0, ex, ey, randomRange(120, 200), 8, alpha, color);
+  }
+
+  // Flash
+  const flashIntensity = randomRange(0.08, 0.22);
+  flash.style.background = `rgba(180, 210, 255, ${flashIntensity})`;
+
+  setTimeout(() => {
+    flash.style.background = 'rgba(180, 210, 255, 0)';
+  }, 80);
+
+  // Fade bolt
+  let fadeAlpha = 1;
+  const fade = setInterval(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    fadeAlpha -= 0.08;
+    if (fadeAlpha <= 0) { clearInterval(fade); return; }
+
+    for (let b = 0; b < numBolts; b++) {
+      const sx = randomRange(canvas.width * 0.15, canvas.width * 0.85);
+      const ex = sx + randomRange(-80, 80);
+      const ey = randomRange(canvas.height * 0.4, canvas.height * 0.8);
+      ctx.globalAlpha = fadeAlpha * 0.3;
+      drawBolt(sx, 0, ex, ey, 60, 5, fadeAlpha * 0.3, 'rgba(180,210,255,1)');
+    }
+  }, 60);
+
+  // Schedule next
+  const nextDelay = randomRange(1200, 4500);
+  setTimeout(triggerLightning, nextDelay);
+}
+
+// Start lightning after a delay
+setTimeout(triggerLightning, 800);
+
+// ======= SCROLL ANIMATIONS =======
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.origin-block, .god-card, .world-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
