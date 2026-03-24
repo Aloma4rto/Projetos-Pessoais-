@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Currículo | Enzo Alves de Souza</title>
+    <link rel="stylesheet" href="Style.css" />
+  </head>
+  <body>
+    <canvas id="binary-canvas"></canvas>
+    <button id="theme-toggle" title="Alternar Modo Escuro">🌓</button>
+
+    <div class="container">
+      <header>
+        <img
+          src="perfil link.jpg"
+          alt="Foto de Enzo Alves"
+          class="profile-img"
+        />
+
+        <div class="header-content">
+          <h1>Enzo Alves de Souza</h1>
+          <div class="contact-info">
+            <span>📍 Itapetininga, SP</span>
+            <span>📞 15 98173-2175</span>
+            <span
+              >✉️
+              <a href="mailto:alvesza01@gmail.com">alvesza01@gmail.com</a></span
+            >
+            <span
+              >🔗
+              <a
+                href="https://www.linkedin.com/in/enzo-alves-de-souza-646537389/"
+                target="_blank"
+                >LinkedIn</a
+                
+              ></span
+              <span>
+                🔗
+                <a
+                  href="https://github.com/Aloma4rto"
+                  target="blank"
+                  >Github</a>
+               
+              </span>
+            >
+          </div>
+        </div>
+      </header>
+
+      <section>
+        <h2>Objetivo Profissional</h2>
+        <p>
+          Busco uma oportunidade de estágio na área de
+          <strong>Desenvolvimento de Software</strong> para aplicar
+          conhecimentos em lógica de programação, estruturas de dados e
+          desenvolvimento de sistemas, visando contribuir para soluções
+          eficientes enquanto aprimoro minhas competências técnicas.
+        </p>
+      </section>
+
+      <section>
+        <h2>Formação Acadêmica</h2>
+        <p><strong>Análise e Desenvolvimento de Sistemas (ADS)</strong></p>
+        <p>FATEC Itapetininga | Previsão de Conclusão: 06/2028</p>
+      </section>
+
+      <section>
+        <h2>Connhecimento técnico</h2>
+        <div class="skills-grid">
+          <div class="skill-tag">Python</div>
+          <div class="skill-tag">C / C++</div>
+          <div class="skill-tag">HTML5 / CSS3</div>
+          <div class="skill-tag">JavaScript</div>
+          <div class="skill-tag">Git / GitHub</div>
+          <div class="skill-tag">Linux</div>
+          <div class="skill-tag">Node.js</div>
+          <div class="skill-tag">Express.js</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Experiência Acadêmica e Projetos</h2>
+        <ul>
+          <li>
+            <strong>Sistemas Web:</strong> Desenvolvimento de aplicações
+            institucionais com foco em arquitetura limpa e semântica HTML.
+          </li>
+          <li>
+            <strong>Currículo Interativo:</strong> Implementação de projeto web
+            utilizando manipulação de DOM e estilização moderna.
+          </li>
+          <li>
+            <strong>Algoritmos:</strong> Desenvolvimento de soluções lógicas
+            utilizando C e C++ para desafios de programação.
+          </li>
+          <li>
+            <strong>Programas:</strong>Desenvolvimento iniciante em python e em
+            lua.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Informações Adicionais</h2>
+        <p>
+          <strong>Disponibilidade:</strong> Segunda a Sábado, das 14:00 às
+          00:00.
+        </p>
+        <p><strong>Idiomas:</strong> Português (Nativo).</p>
+        <p>
+          <strong>Um pouco mais sobre mim: </strong>Sou uma pessoa dedicada,
+          para trabalhar em equipe e aprender cada vez mais.
+        </p>
+      </section>
+      <section>
+        <h2></h2>
+      </section>
+    </div>
+
+    <script>
+      // --- Lógica do Modo Escuro ---
+      const toggleBtn = document.getElementById("theme-toggle");
+      const body = document.body;
+
+      if (localStorage.getItem("dark-mode") === "enabled") {
+        body.classList.add("dark-mode");
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+        localStorage.setItem(
+          "dark-mode",
+          body.classList.contains("dark-mode") ? "enabled" : "disabled",
+        );
+      });
+
+      // --- Animação Binária ---
+      const canvas = document.getElementById("binary-canvas");
+      const ctx = canvas.getContext("2d");
+
+      let width, height, columns, drops;
+      const fontSize = 16;
+
+      function initCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        columns = Math.floor(width / fontSize);
+        drops = new Array(columns).fill(1);
+      }
+
+      function draw() {
+        // Fundo semi-transparente para criar rastro
+        ctx.fillStyle = body.classList.contains("dark-mode")
+          ? "rgba(2, 6, 23, 0.1)"
+          : "rgba(248, 250, 252, 0.1)";
+        ctx.fillRect(0, 0, width, height);
+
+        // Cor dos caracteres
+        ctx.fillStyle = getComputedStyle(
+          document.documentElement,
+        ).getPropertyValue("--primary-color");
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = Math.floor(Math.random() * 2);
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      window.addEventListener("resize", initCanvas);
+      initCanvas();
+      setInterval(draw, 50);
+
+      fetch("/api/status")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("resposta do servidor:", data.mensagem);
+        })
+        .catch((err) => console.log("Rodando em modo estático(semNode.js)"));
+    </script>
+  </body>
+</html>
